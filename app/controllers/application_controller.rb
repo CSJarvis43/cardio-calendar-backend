@@ -1,9 +1,7 @@
-# import SECRET_KEY from '/vars.env'
-
 class ApplicationController < ActionController::API
     before_action :authorized
 
-    SECRET_KEY = "dasdlfkjasoifeon"
+    SECRET_KEY = ENV["SECRET_KEY"]
 
     def encode_token(payload)
         JWT.encode(payload, SECRET_KEY)
