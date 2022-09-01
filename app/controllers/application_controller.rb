@@ -1,5 +1,7 @@
 class ApplicationController < ActionController::API
     before_action :authorized
+    rescue_from ActiveRecord::RecordNotFound, with: :record_not_found
+    rescue_from ActiveRecord::RecordInvalid, with: :record_invalid
 
     SECRET_KEY = ENV["SECRET_KEY"]
 
@@ -35,5 +37,15 @@ class ApplicationController < ActionController::API
 
     def authorized
         render json: { message: "Please log in" }, status: :unauthorized unless logged_in?
+    end
+
+    private
+
+    def record_invalid(exc)
+        render json: { errors: exc.record.errors.full_messages }, status: :unprocessable_entity
+    end
+
+    def record_not_found(exc)
+        render json: { error: "#{exc.model} not found"}, status: :not_found
     end
 end

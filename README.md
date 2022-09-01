@@ -1,62 +1,658 @@
-Flatiron Phase 5/Capstone Project
+# API Documentation
 
-by Charles Jarvis
+## POST /users
 
-This app is intended to be a sort of fitness tracking application, with a specific focus on cardio-centric exercises.
-This idea was born out of a personal need for something like this, as right now I really just use a whiteboard calendar on my wall, and adding some more measurements/categories I think would be very useful.
-The main idea behind this app is for a user to be able to come with some statistics about their workout, and have the app provide them with some statistics, and keep track of their progress over the last week/month/year.
-One note about this project is that it is more of an "after the fact" type of project, and thus will not be dealing with GPS data or other active monitoring tech.
+Creates a new user:
 
-User Stories:
+Accepts a user object:
+```json
+{
+    "user": {
+        "username": "csjarvis43",
+        "password": "123",
+        "name": "charlie",
+        "location": "Colorado"
+    }
+}
+```
 
-    *A user comes to the site having just completed a run/bike/swim/etc and has tracked both the distance and time of their exercise. They can submit a new workout to the app, which will store the data and display it for the user.
-        The app will also provide the user some more detailed statistics about their session. At this point in time I am thinking calories, distance/time, personal records.
+Returns the user object if created successfully
 
-    *User wants to see their past week/month of activity, the app will have some way of displaying the stored data about the users activity history in an organized and sleek manner.
-        At this moment in time I see this as a calendar, but depending on how implementing that goes it might be in a different format. Will also likely be the homepage
+## POST /login
 
-    *A user wants to see their activities broken down by category. The app will be able to serve the user the data about their exercise sessions, based on what activity they are doing, along with some relevant data about those sessions.
-        Currently I plan to include running, biking, hiking, swimming, and skiing, simply based on myself. **Possible stretch goal - add more activity types
+Logs a user into an existing account
 
-    *A user wants to see their streak for completing activities, the app will be able to serve them data about different types of streaks, whether its daily streaks, weekly streaks, or same type activity streaks. 
-        This is planned to be a prominent feature on the homepage.
+Accepts a user object with username and password:
+```json
+{
+    "user": {
+        "username": "csjarvis43",
+        "password": "123"
+    }
+}
+```
 
-Feature Stories:
+Returns the user object and a JWT token:
+```json
+{
+	"user": {
+		"id": 16,
+		"username": "csjarvis432",
+		"location": "Colorado",
+		"name": "charlie"
+	},
+	"jwt": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxNn0.TeQZt3vwCQpLhBV0VkqOM2T4Q1VLvQFU7NYwzwbZ8Hc"
+}
+```
 
-    *Login/signup:
-        User comes to the site and either logs in to their existing account, or creates a new account
-        The user will have some sort of authentication that will stick with them, no need to log in multiple times
-        Will likely be the landing page to the site
-        Activities will be filtered by user, one user will not be able to see another's data
+### GET /me
 
-    *Session submit:
-        User comes to the site with the time/distance from their last session, fills out that info to a form
-        On form submit, that data is POSTed to the backend, and tied to the user that submitted it
-        The user is then redirected to either a summary of that session, or that week (will be decided on later)
+Returns the user object if authenticated by a bearer token:
+```json
+{
+	"user": {
+		"id": 16,
+		"username": "csjarvis432",
+		"location": "Colorado",
+		"name": "charlie"
+	}
+}
+```
 
-    *Activity Summary:
-        User is likely taken here as their homepage
-        Plan is to implement as a calendar, with each day showing a summary of what the user did on that day
-        User can choose between a weekly calendar and a monthly calendar
-        User can click on a session to go to a detail page show that session's activities/statistics
+If not authenticated, returns a message:
 
-    *Category Filtering
-        User will have a menu to filter their activities by what category they fall under
-        User will have different viewing options in a menu for how they want to organize the data
-        User can click on a session to again go to its detail page and see advanced stats
+```json
+{
+	"message": "Please log in"
+}
+```
 
-    *Streaks
-        User can choose the type of streaks that they want to see displayed (potentially choosing a default sort on signup)
-        Streaks will display on their homepage
-        Potentially have a streaks page with more advanced stats about their currently selected type of streak
+### POST /auto_login
 
-The above user stories I think is a good place to start in terms of goals for this project. Because this is supposed to be a clean and polished app, I feel as though it is better to lock down a core set of features, and improve on them after reaching MVP.
-I think I can reach MVP status for this project within about a week and a half, and afterwards, can start working on some stretch goals:
+Takes in a JWT:
 
-Stretch Goals:
+```json
+{
+    "jwt": "eyJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoxNn0.TeQZt3vwCQpLhBV0VkqOM2T4Q1VLvQFU7NYwzwbZ8Hc"
+    
+}
+```
 
-    *A section that allows the user to also keep track of their meals/calorie intake. I think this fits right in with the theme of my project.
-        If this ends up getting included, I could revamp the session/daily statistics to include a calorie intake/expendature model to help the user keep track of that
+Returns the user object matching that token:
 
-    *Incude a section about trails, allowing users to submit their favorite trails and allowing others inspiration for where to go next.
-        Could have a browsing page, reviews, top rated, etc. 
+```json
+{
+	"id": 16,
+	"username": "csjarvis432",
+	"location": "Colorado",
+	"name": "charlie"
+}
+```
+
+## GET /active_days
+
+Returns a list of active days and the user they belong to:
+
+```json
+[
+	{
+		"id": 1,
+		"date": "2022-08-31",
+		"day_of_week": "wednesday",
+		"streak": 4,
+		"user_id": 1
+	},
+	{
+		"id": 2,
+		"date": "2022-08-30",
+		"day_of_week": "tuesday",
+		"streak": 3,
+		"user_id": 1
+	}
+]
+```
+
+## GET /active_days/:id
+
+Returns a single active days found by id:
+
+```json
+{
+	"active_day": {
+		"id": 1,
+		"date": "2022-08-31",
+		"day_of_week": "wednesday",
+		"streak": 4,
+		"user_id": 1
+	}
+}
+```
+
+## POST /active_days
+
+Accepts an active_day JSON object with keys date, day_of_week, streak, and user_id:
+
+```json
+{
+	"active_day": {
+		"date": "2022-08-31",
+		"day_of_week": "wednesday",
+		"streak": 4,
+		"user_id": 1
+	}
+}
+```
+Returns the JSON object with its newly created id:
+
+```json
+{
+	"active_day": {
+		"id": 8,
+		"date": "2022-08-31",
+		"day_of_week": "wednesday",
+		"streak": 4,
+		"user_id": 1
+	}
+}
+```
+
+## DELETE /active_days/:id
+
+Destroys the ActiveDay record associated with the provided ID
+
+## GET /activities
+
+Returns a list of activities and the user they belong to:
+
+```json
+[
+	{
+		"id": 1,
+		"active_day_id": 1,
+		"exercise_type": "bike"
+	},
+	{
+		"id": 2,
+		"active_day_id": 1,
+		"exercise_type": "run"
+	},
+	{
+		"id": 3,
+		"active_day_id": 2,
+		"exercise_type": "bike"
+	}
+]
+```
+
+## GET /activities/:id
+
+Returns a single activity found by id:
+
+```json
+{
+	"activity": {
+		"id": 1,
+		"active_day_id": 1,
+		"exercise_type": "bike"
+	}
+}
+```
+
+## POST /activities
+
+Accepts an activity JSON object with keys active_day_id and exercise_type:
+
+```json
+{
+	"activity": {
+		"active_day_id": 1,
+		"exercise_type": "bike"
+	}
+}
+```
+Returns the JSON object with its newly created id:
+
+```json
+{
+	"activity": {
+		"id": 11,
+		"active_day_id": 1,
+		"exercise_type": "bike"
+	}
+}
+```
+
+## DELETE /activities/:id
+
+Destroys the Activity record associated with the provided ID
+
+## GET /bikes
+
+Returns a list of bike sessions and the user they belong to:
+
+```json
+[
+	{
+		"id": 1,
+		"activity_length": 93,
+		"calories": 1063,
+		"distance": 12.65,
+		"streak": 3,
+		"rating": 8,
+		"summary": "good",
+		"activity_id": 1
+	},
+	{
+		"id": 2,
+		"activity_length": 49,
+		"calories": 560,
+		"distance": 8.69,
+		"streak": 2,
+		"rating": 7,
+		"summary": "good",
+		"activity_id": 3
+	}
+]
+```
+
+## GET /bikes/:id
+
+Returns a single bike session found by id:
+
+```json
+{
+	"bike": {
+		"id": 2,
+		"activity_length": 49,
+		"calories": 560,
+		"distance": 8.69,
+		"streak": 2,
+		"rating": 7,
+		"summary": "good",
+		"activity_id": 3
+	}
+}
+```
+
+## POST /bikes
+
+Accepts a bike JSON object with keys activity_length, calories, distance, streak, rating, summary, and activity_id:
+
+```json
+{
+	"bike": {
+		"activity_length": 49,
+		"calories": 560,
+		"distance": 8.69,
+		"streak": 2,
+		"rating": 7,
+		"summary": "good",
+		"activity_id": 3
+	}
+}
+```
+Returns the JSON object with its newly created id:
+
+```json
+{
+	"bike": {
+		"id": 5,
+		"activity_length": 49,
+		"calories": 560,
+		"distance": 8.69,
+		"streak": 2,
+		"rating": 7,
+		"summary": "good",
+		"activity_id": 3
+	}
+}
+```
+
+## DELETE /bikes/:id
+
+Destroys the bike session record associated with the provided ID
+
+## GET /hikes
+
+Returns a list of hike sessions and the user they belong to:
+
+```json
+[
+	{
+		"id": 1,
+		"activity_length": 142,
+		"calories": 974,
+		"distance": 5.22,
+		"streak": 1,
+		"rating": 5,
+		"summary": "good",
+		"activity_id": 6
+	},
+	{
+		"id": 2,
+		"activity_length": 82,
+		"calories": 562,
+		"distance": 2.75,
+		"streak": 1,
+		"rating": 8,
+		"summary": "good",
+		"activity_id": 10
+	}
+]
+```
+
+## GET /hikes/:id
+
+Returns a single hike session found by id:
+
+```json
+{
+	"hike": {
+		"id": 1,
+		"activity_length": 142,
+		"calories": 974,
+		"distance": 5.22,
+		"streak": 1,
+		"rating": 5,
+		"summary": "good",
+		"activity_id": 6
+	}
+}
+```
+
+## POST /hikes
+
+Accepts a hike JSON object with keys activity_length, calories, distance, streak, rating, summary, and activity_id:
+
+```json
+{
+	"hike": {
+		"activity_length": 142,
+		"calories": 974,
+		"distance": 5.22,
+		"streak": 1,
+		"rating": 5,
+		"summary": "good",
+		"activity_id": 6
+	}
+}
+```
+Returns the JSON object with its newly created id:
+
+```json
+{
+	"hike": {
+		"id": 3,
+		"activity_length": 142,
+		"calories": 974,
+		"distance": 5.22,
+		"streak": 1,
+		"rating": 5,
+		"summary": "good",
+		"activity_id": 6
+	}
+}
+```
+
+## DELETE /hikes/:id
+
+Destroys the hike session record associated with the provided ID
+
+## GET /runs
+
+Returns a list of run sessions and the user they belong to:
+
+```json
+[
+	{
+		"id": 1,
+		"activity_length": 73,
+		"calories": 1163,
+		"distance": 7.01,
+		"streak": 1,
+		"rating": 9,
+		"summary": "good",
+		"activity_id": 2
+	},
+	{
+		"id": 2,
+		"activity_length": 58,
+		"calories": 912,
+		"distance": 12.65,
+		"streak": 1,
+		"rating": 8,
+		"summary": "good",
+		"activity_id": 5
+	}
+]
+```
+
+## GET /runs/:id
+
+Returns a single run session found by id:
+
+```json
+{
+	"run": {
+		"id": 1,
+		"activity_length": 73,
+		"calories": 1163,
+		"distance": 7.01,
+		"streak": 1,
+		"rating": 9,
+		"summary": "good",
+		"activity_id": 2
+	}
+}
+```
+
+## POST /runs
+
+Accepts a run JSON object with keys activity_length, calories, distance, streak, rating, summary, and activity_id:
+
+```json
+{
+	"run": {
+		"activity_length": 58,
+		"calories": 912,
+		"distance": 12.65,
+		"streak": 1,
+		"rating": 8,
+		"summary": "good",
+		"activity_id": 5
+	}
+}
+
+```
+Returns the JSON object with its newly created id:
+
+```json
+{
+	"run": {
+		"id": 3,
+		"activity_length": 58,
+		"calories": 912,
+		"distance": 12.65,
+		"streak": 1,
+		"rating": 8,
+		"summary": "good",
+		"activity_id": 5
+	}
+}
+```
+
+## DELETE /runs/:id
+
+Destroys the run session record associated with the provided ID
+
+## GET /skis
+
+Returns a list of ski sessions and the user they belong to:
+
+```json
+[
+	{
+		"id": 1,
+		"activity_length": 243,
+		"calories": 1667,
+		"distance": 25.37,
+		"streak": 1,
+		"rating": 9,
+		"summary": "good",
+		"activity_id": 7
+	},
+	{
+		"id": 2,
+		"activity_length": 342,
+		"calories": 2346,
+		"distance": 33.28,
+		"streak": 1,
+		"rating": 10,
+		"summary": "good",
+		"activity_id": 9
+	}
+]
+```
+
+## GET /skis/:id
+
+Returns a single ski session found by id:
+
+```json
+{
+	"ski": {
+		"id": 2,
+		"activity_length": 342,
+		"calories": 2346,
+		"distance": 33.28,
+		"streak": 1,
+		"rating": 10,
+		"summary": "good",
+		"activity_id": 9
+	}
+}
+```
+
+## POST /skis
+
+Accepts a ski JSON object with keys activity_length, calories, distance, streak, rating, summary, and activity_id:
+
+```json
+{
+	"ski": {
+		"activity_length": 342,
+		"calories": 2346,
+		"distance": 33.28,
+		"streak": 1,
+		"rating": 10,
+		"summary": "good",
+		"activity_id": 9
+	}
+}
+```
+Returns the JSON object with its newly created id:
+
+```json
+{
+	"ski": {
+		"id": 3,
+		"activity_length": 342,
+		"calories": 2346,
+		"distance": 33.28,
+		"streak": 1,
+		"rating": 10,
+		"summary": "good",
+		"activity_id": 9
+	}
+}
+```
+
+## DELETE /skis/:id
+
+Destroys the ski session record associated with the provided ID
+
+## GET /swims
+
+Returns a list of swim sessions and the user they belong to:
+
+```json
+[
+	{
+		"id": 1,
+		"activity_length": 45,
+		"calories": 309,
+		"distance": 12.65,
+		"streak": 1,
+		"rating": 3,
+		"summary": "good",
+		"activity_id": 8
+	},
+	{
+		"id": 2,
+		"activity_length": 45,
+		"calories": 309,
+		"distance": 12.65,
+		"streak": 1,
+		"rating": 3,
+		"summary": "good",
+		"activity_id": 8
+	}
+]
+```
+
+## GET /swims/:id
+
+Returns a single swim session found by id:
+
+```json
+{
+	"swim": {
+		"id": 1,
+		"activity_length": 45,
+		"calories": 309,
+		"distance": 12.65,
+		"streak": 1,
+		"rating": 3,
+		"summary": "good",
+		"activity_id": 8
+	}
+}
+```
+
+## POST /swims
+
+Accepts a swim JSON object with keys activity_length, calories, distance, streak, rating, summary, and activity_id:
+
+```json
+{
+	"swim": {
+		"activity_length": 45,
+		"calories": 309,
+		"distance": 12.65,
+		"streak": 1,
+		"rating": 3,
+		"summary": "good",
+		"activity_id": 8
+	}
+}
+```
+Returns the JSON object with its newly created id:
+
+```json
+{
+	"swim": {
+		"id": 2,
+		"activity_length": 45,
+		"calories": 309,
+		"distance": 12.65,
+		"streak": 1,
+		"rating": 3,
+		"summary": "good",
+		"activity_id": 8
+	}
+}
+```
+
+## DELETE /swims/:id
+
+Destroys the swim session record associated with the provided ID
