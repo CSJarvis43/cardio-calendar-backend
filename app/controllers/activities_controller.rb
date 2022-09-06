@@ -24,6 +24,6 @@ class ActivitiesController < ApplicationController
     end
 
     def activity_params
-        params.require(:activity).permit(:active_day_id, :exercise_type)
+        params.require(:activity).permit(:active_day_id, :exercise_type, :activity_length, :calories, :distance, :streak, :rating, :summary)
     end
 end

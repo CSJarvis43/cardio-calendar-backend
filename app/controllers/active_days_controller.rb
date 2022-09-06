@@ -17,6 +17,12 @@ class ActiveDaysController < ApplicationController
         head :no_content
     end
 
+    def activities_index
+        active_day = find_active_day
+        activities = active_day.activities
+        render json: activities, include: :active_day
+    end
+
     private
 
     def find_active_day
