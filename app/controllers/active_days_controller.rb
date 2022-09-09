@@ -1,4 +1,3 @@
-require 'debug'
 
 class ActiveDaysController < ApplicationController
 
@@ -11,9 +10,6 @@ class ActiveDaysController < ApplicationController
     end
 
     def create
-        
-        # binding.b
-        
         render json: {active_day: ActiveDaySerializer.new(ActiveDay.create!(active_day_params))}, status: :created
     end
 
