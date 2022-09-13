@@ -9,4 +9,6 @@ Rails.application.routes.draw do
 
   get '/active_days/:id/activities', to: 'active_days#activities_index'
 
+  get '/activities/:exercise_type/top/:column', to: 'activities#top_activities'
+
 end
