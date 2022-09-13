@@ -17,6 +17,16 @@ class ActivitiesController < ApplicationController
         head :no_content
     end
 
+    def top_activities
+        @column = params[:column]
+        @activities = Activity.where("exercise_type = ?", params[:exercise_type])
+        @activities_by_column = @activities.sort_by do |a|
+            a[@column]
+        end
+
+        render json: @activities_by_column.reverse
+    end
+
     private
 
     def find_activity
