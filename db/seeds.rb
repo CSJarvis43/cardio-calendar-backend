@@ -13,6 +13,7 @@ u4 = User.create(username: "steve1257", password: '123', name: "Steven", locatio
 
 puts "Seeding active days 📆"
 
+ad0 = ActiveDay.create(date: Date.new(2020,1,1), day_of_week: 'wednesday', streak: 1, user_id: u1.id)
 ad4 = ActiveDay.create(date: Date.new(2022,8,28), day_of_week: 'sunday', streak: 1, user_id: u1.id)
 ad3 = ActiveDay.create(date: Date.new(2022,8,29), day_of_week: 'monday', streak: 2, user_id: u1.id)
 ad2 = ActiveDay.create(date: Date.new(2022,8,30), day_of_week: 'tuesday', streak: 3, user_id: u1.id)
