@@ -24,7 +24,7 @@ class ActivitiesController < ApplicationController
             a[@column]
         end
 
-        render json: @activities_by_column.reverse
+        render json: @activities_by_column.reverse.to_json(:include => :active_day)
     end
 
     private
