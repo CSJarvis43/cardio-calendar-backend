@@ -292,3 +292,58 @@ Returns the activities associated with the id of a particular active_day:
 	}
 ]
 ```
+
+## GET /activities/:exercise_type/top/:column
+
+Takes 2 params in the request, returns the record with the highest attribute in the column specified, for the activity specified
+
+Example URI - "http://localhost:3000/activities/bike/top/calories" will return "exercise_type: bike" records ordered by the highest value in the calories column, along with their associated active_day records
+
+```json
+[
+	{
+		"id": 15,
+		"active_day_id": 12,
+		"exercise_type": "bike",
+		"activity_length": 45,
+		"calories": 54,
+		"distance": 45.0,
+		"streak": null,
+		"rating": 5,
+		"summary": null,
+		"created_at": "2022-09-14T16:50:23.473Z",
+		"updated_at": "2022-09-14T16:50:23.473Z",
+		"active_day": {
+			"id": 12,
+			"date": "2022-09-15",
+			"day_of_week": "Thursday",
+			"streak": 2,
+			"user_id": 2,
+			"created_at": "2022-09-14T16:50:23.399Z",
+			"updated_at": "2022-09-14T16:50:23.399Z"
+		}
+	},
+	{
+		"id": 4,
+		"active_day_id": 3,
+		"exercise_type": "bike",
+		"activity_length": 121,
+		"calories": 1383,
+		"distance": 18.25,
+		"streak": 1,
+		"rating": 6,
+		"summary": "good",
+		"created_at": "2022-09-13T18:18:36.523Z",
+		"updated_at": "2022-09-13T18:18:36.523Z",
+		"active_day": {
+			"id": 3,
+			"date": "2022-08-29",
+			"day_of_week": "monday",
+			"streak": 2,
+			"user_id": 1,
+			"created_at": "2022-09-13T18:18:36.466Z",
+			"updated_at": "2022-09-13T18:18:36.466Z"
+		}
+	}
+]
+```
